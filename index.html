@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Reservation System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- =====================================================
+         LOGIN PAGE
+    ===================================================== -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>Facility Reservation System</h1>
+                    <p>Sign in to your account</p>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                    <div id="login-error" class="error-message"></div>
+                </form>
+                <div class="login-footer">
+                    <p>Demo Accounts (set up in Supabase):</p>
+                    <small>Admin | Facility Staff | Requester</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         MAIN APPLICATION
+    ===================================================== -->
+    <div id="app-container" class="hidden">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h2>FRS</h2>
+                <span class="subtitle">Facility Reservation</span>
+            </div>
+            <ul id="nav-menu">
+                <!-- Menu items populated by JS based on role -->
+            </ul>
+            <div class="sidebar-footer">
+                <div id="user-info">
+                    <span id="user-name"></span>
+                    <span id="user-role" class="role-badge"></span>
+                </div>
+                <button id="logout-btn" class="btn btn-danger btn-sm">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Dashboard -->
+            <section id="section-dashboard" class="section active">
+                <h2>Dashboard</h2>
+                <div id="dashboard-stats" class="stats-grid"></div>
+                <div id="dashboard-content"></div>
+            </section>
+
+            <!-- Facilities Management -->
+            <section id="section-facilities" class="section">
+                <h2>Facilities Management</h2>
+                <div id="facilities-toolbar"></div>
+                <div id="facilities-list" class="card-grid"></div>
+            </section>
+
+            <!-- Reservations -->
+            <section id="section-reservations" class="section">
+                <h2>Reservations</h2>
+                <div id="reservations-toolbar"></div>
+                <div id="reservations-list"></div>
+            </section>
+
+            <!-- New Reservation -->
+            <section id="section-new-reservation" class="section">
+                <h2>New Reservation</h2>
+                <form id="reservation-form" class="form-card">
+                    <div class="form-group">
+                        <label for="res-facility">Facility *</label>
+                        <select id="res-facility" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="res-title">Title *</label>
+                        <input type="text" id="res-title" required placeholder="Reservation title">
+                    </div>
+                    <div class="form-group">
+                        <label for="res-description">Description</label>
+                        <textarea id="res-description" rows="3" placeholder="Brief description"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="res-start">Start Time *</label>
+                            <input type="datetime-local" id="res-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="res-end">End Time *</label>
+                            <input type="datetime-local" id="res-end" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Reservation</button>
+                </form>
+            </section>
+
+            <!-- Approval Queue (Admin only) -->
+            <section id="section-approvals" class="section">
+                <h2>Approval Queue</h2>
+                <div id="approvals-list"></div>
+            </section>
+
+            <!-- Service Requests -->
+            <section id="section-services" class="section">
+                <h2>Service Requests</h2>
+                <div id="services-toolbar"></div>
+                <div id="services-list"></div>
+            </section>
+
+            <!-- Users Management (Admin only) -->
+            <section id="section-users" class="section">
+                <h2>User Management</h2>
+                <div id="users-list"></div>
+            </section>
+
+            <!-- Audit Logs (Admin only) -->
+            <section id="section-audit" class="section">
+                <h2>Audit Logs</h2>
+                <div id="audit-filters"></div>
+                <div id="audit-list"></div>
+            </section>
+
+            <!-- My Reservations (Requester) -->
+            <section id="section-my-reservations" class="section">
+                <h2>My Reservations</h2>
+                <div id="my-reservations-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- =====================================================
+         MODALS
+    ===================================================== -->
+    <!-- Facility Modal -->
+    <div id="facility-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="facility-modal-title">Add Facility</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="facility-form">
+                <input type="hidden" id="facility-id">
+                <div class="form-group">
+                    <label for="facility-name">Name *</label>
+                    <input type="text" id="facility-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="facility-description">Description</label>
+                    <textarea id="facility-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="facility-location">Location</label>
+                    <input type="text" id="facility-location">
+                </div>
+                <div class="form-group">
+                    <label for="facility-capacity">Capacity</label>
+                    <input type="number" id="facility-capacity" min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="facility-status">Status</label>
+                    <select id="facility-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Facility</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reservation Detail Modal -->
+    <div id="reservation-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reservation Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div id="reservation-detail"></div>
+            <div id="reservation-actions"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/audit.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
