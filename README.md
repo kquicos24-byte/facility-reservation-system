@@ -103,4 +103,4 @@ See `docs/test-results.md` for detailed functional test results (TC-B4-01 to TC-
 
 ## License
 
-This project is for educational purposes (SAD Lab 4 - Section B).
+This project is for educational purposes (SAD Lab 4 - Section A).
